@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
-import {Field, reduxForm} from 'redux-form';
-import {Link} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostsNew extends Component {
     renderField(field) {
@@ -23,7 +25,9 @@ class PostsNew extends Component {
     }
 
     onSubmit(values) {
-        console.log(values);
+        this.props.createPost(values, () => {
+            this.props.history.push('/');
+        });
     }
 
     render() {
@@ -68,11 +72,13 @@ function validate(values) {
         errors.content = "Enter some content please";
     }
     //If errors is empty, form is fine to submit
-    //iff errors has any properties, redux form assumes form is invalid
+    //if errors has any properties, redux form assumes form is invalid
     return errors;
 }
 
 export default reduxForm({
     validate,
     form: 'PostsNewForm'
-})(PostsNew);
+})(
+    connect(null,{ createPost })(PostsNew)
+);
